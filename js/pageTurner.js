@@ -1,13 +1,24 @@
 var pageTurner = (function() {
   'use strict';
 
-  var studentSearch = $('<div class="student-search"></div>');
-  var input = $('<input placeholder="Search for students...">');
-  var pageHeader = $('.page-header');
-  var currentPage = $('.page');
-  var students = $('.student-item');
-  var empty = $('<h1 class="empty">No Results Found</h1>');
-  var studentList = $('.student-list');
+  var config = {};
+
+  var studentSearch; // jquery object - default: $('<div class="student-search"></div>')
+  var pageHeader; // jquery object - default: $('.page-header')
+  var currentPage; // jquery object - default: $('.page')
+  var students; // jquery object - default: $('.student-item')
+  var empty; // jquery object - default: $('<h1 class="empty">No Results Found</h1>')
+  var studentList; // jquery object - default: $('.student-list')
+  var input; // jquery object - default: $('<input placeholder="Search for students...">')
+
+  var elementsToQuery; //an array of css selectors - default:
+  var itemsOnPage; // integer - default: ['h3','span.email']
+
+  var paginationClass; // string of a class name - default: 'pagination'
+  var paginationElement; // string to identify a tag name - default: 'div'
+  var paginationString; // string created from paginationClass and paginationElement
+  // - default: '<' + paginationElement + ' class="' + paginationClass + '"></' + paginationElement + '>';
+
 
 
   /*
@@ -17,23 +28,31 @@ var pageTurner = (function() {
 
   function search() {
 
-    var value = input.val().toLowerCase().trim(); // Get search value
+    var query = input.val().toLowerCase().trim(); // Get search value
 
     var matches = students.filter(function(index) { // Go through all the students
 
-      var name = $(this).find('h3').text().toLowerCase().trim(); // Get name
-      var email = $(this).find('span.email').text().toLowerCase().trim(); // Get email
+      var that = this; // Store the student item element
 
-      if (name.search(value) !== -1 || email.search(value) !== -1) { // If name or email match
-        return true; // Add it to the matches array
-      } else {
-        return false; // otherwise don't add it, but leave students array intact
-      }
+      // go through the list of elements in the student item we want to search
+      var results = elementsToQuery.map(function(element) {
+        // get the text of the element
+        var elementText = $(that).find(element).text().toLowerCase().trim();
+        // If the query matches the element text
+        if (elementText.search(query) !== -1) {
+          return true; // return a 'matched' result
+        } else {
+          return false; // return a 'no match' result
+        }
+      });
+
+      // if any results matched, add the element to the matches array
+      return results.indexOf(true) !== -1;
 
     });
 
     var pagination = createPage(0, students, matches); // display page and create menu
-    $('.pagination').remove(); // Remove the current menu
+    $('.' + paginationClass).remove(); // Remove the current menu
 
     if(matches.length !== 0) {
       if(empty) {empty.remove();} // remove empty message if it's there
@@ -119,7 +138,7 @@ var pageTurner = (function() {
   function createPage(page, entries, matches) {
     var navObj = displayPage(page, entries, matches);
     var navList = createPageNavList(navObj);
-    var pagination = $('<div class="pagination"></div>');
+    var pagination = $(paginationString);
     pagination.append(navList);
     return pagination;
   }
@@ -131,7 +150,23 @@ var pageTurner = (function() {
    */
 
   return {
-    init: function() {
+    init: function(config) {
+      if(!config) {config = {};}
+      studentSearch = config.studentSearch || $('<div class="student-search"></div>');
+      pageHeader = config.pageHeader || $('.page-header');
+      currentPage = config.currentPage || $('.page');
+      students = config.students || $('.student-item');
+      empty = config.empty || $('<h1 class="empty">No Results Found</h1>');
+      studentList = config.studentList || $('.student-list');
+      input = config.input || $('<input placeholder="Search for students...">');
+
+      elementsToQuery = config.elementsToQuery || ['h3','span.email'];
+      itemsOnPage = config.itemsOnPage || 10;
+
+      paginationClass = config.paginationElement || 'pagination';
+      paginationElement = config.paginationElement || 'div';
+      paginationString = '<' + paginationElement + ' class="' + paginationClass + '"></' + paginationElement + '>';
+
       input.keyup(search);
       studentSearch.append(input);
       pageHeader.append(studentSearch);
@@ -139,6 +174,4 @@ var pageTurner = (function() {
       currentPage.append(pagination);
     }
   };
-
-
 })();
