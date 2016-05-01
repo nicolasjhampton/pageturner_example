@@ -11,8 +11,8 @@ var pageTurner = (function() {
   var studentList; // jquery object - default: $('.student-list')
   var input; // jquery object - default: $('<input placeholder="Search for students...">')
 
-  var elementsToQuery; //an array of css selectors - default:
-  var itemsOnPage; // integer - default: ['h3','span.email']
+  var elementsToQuery; //an array of css selectors - default: ['h3','span.email']
+  var itemsOnPage; // integer - default: 10
 
   var paginationClass; // string of a class name - default: 'pagination'
   var paginationElement; // string to identify a tag name - default: 'div'
