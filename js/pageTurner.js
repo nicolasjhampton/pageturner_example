@@ -19,24 +19,6 @@ var PageTurner = (function($) {
   var paginationElement;
   var paginationString;
 
-  function pageTurner(config) {
-
-    if(!config) {config = {};}
-    studentSearch = config.studentSearch || $('<div class="student-search"></div>');
-    pageHeader = config.pageHeader || $('.page-header');
-    currentPage = config.currentPage || $('.page');
-    students = config.students || $('.student-item');
-    empty = config.empty || $('<h1 class="empty">No Results Found</h1>');
-    studentList = config.studentList || $('.student-list');
-    input = config.input || $('<input placeholder="Search for students...">');
-    elementsToQuery = config.elementsToQuery || ['h3','span.email'];
-    itemsOnPage = config.itemsOnPage || 10;
-    paginationClass = config.paginationElement || 'pagination';
-    paginationElement = config.paginationElement || 'div';
-    paginationString = '<' + paginationElement + ' class="' + paginationClass + '"></' + paginationElement + '>';
-
-  }
-
 
   /*
    * search method
@@ -159,6 +141,24 @@ var PageTurner = (function($) {
     return pagination;
   }
 
+
+  function PageTurner(config) {
+
+    if(!config) {config = {};}
+    studentSearch = config.studentSearch || $('<div class="student-search"></div>');
+    pageHeader = config.pageHeader || $('.page-header');
+    currentPage = config.currentPage || $('.page');
+    students = config.students || $('.student-item');
+    empty = config.empty || $('<h1 class="empty">No Results Found</h1>');
+    studentList = config.studentList || $('.student-list');
+    input = config.input || $('<input placeholder="Search for students...">');
+    elementsToQuery = config.elementsToQuery || ['h3','span.email'];
+    itemsOnPage = config.itemsOnPage || 10;
+    paginationClass = config.paginationElement || 'pagination';
+    paginationElement = config.paginationElement || 'div';
+    paginationString = '<' + paginationElement + ' class="' + paginationClass + '"></' + paginationElement + '>';
+
+  }
 
   /*
    * Run method
