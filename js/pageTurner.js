@@ -2,25 +2,14 @@ var PageTurner = (function($, window, document) {
   'use strict';
 
 /*
- *  PageTurner Version 1.0.0
+ *  PageTurner Version 1.1.0
  *  Copyright Nicolas James Hampton 2016
  *  Creates pages out of identical html items
  *  with built in search
  *
  */
 
-  var students;
-  var studentSearch;
-  var pageHeader;
-  var currentPage;
-  var empty;
-  var studentList;
-  var input;
-  var elementsToQuery;
-  var itemsOnPage;
-  var paginationClass;
-  var paginationElement;
-  var paginationString;
+  var host = {};
 
   var defaults = {
     "studentSearch": $('<div class="student-search"></div>'),
@@ -35,9 +24,9 @@ var PageTurner = (function($, window, document) {
       'span.email'
     ],
     "itemsOnPage": 10,
-    "paginationElement": 'pagination',
+    "paginationClass": 'pagination',
     "paginationElement": 'div'
-  }
+  };
 
   /*
    * Constructor function for pageturner object
@@ -46,18 +35,10 @@ var PageTurner = (function($, window, document) {
   function PageTurner(options) {
     if(!options) {options = {};}
     var config = $.extend( {}, defaults, options );
-    studentSearch = config.studentSearch;
-    pageHeader = config.pageHeader;
-    currentPage = config.currentPage;
-    students = config.students;
-    empty = config.empty;
-    studentList = config.studentList;
-    input = config.input;
-    elementsToQuery = config.elementsToQuery;
-    itemsOnPage = config.itemsOnPage;
-    paginationClass = config.paginationElement;
-    paginationElement = config.paginationElement;
-    paginationString = '<' + paginationElement + ' class="' + paginationClass + '"></' + paginationElement + '>';
+
+    Object.keys(config).map(function(setting) {
+      host[setting] = config[setting];
+    });
   }
 
 
@@ -67,16 +48,16 @@ var PageTurner = (function($, window, document) {
    * and Initialization code
    *
    */
-  pageTurner.prototype.run =  function() {
+  PageTurner.prototype.run =  function() {
     var that = this;
-    
-    input.keyup(search.bind(that));
-    studentSearch.append(input);
-    pageHeader.append(studentSearch);
 
-    var pagination = createPage(0, students, students);
-    currentPage.append(pagination);
-  }
+    host.input.keyup(search.bind(that));
+    host.studentSearch.append(host.input);
+    host.pageHeader.append(host.studentSearch);
+
+    var pagination = createPage(0, host.students, host.students);
+    host.currentPage.append(pagination);
+  };
 
 
   /*
@@ -87,13 +68,13 @@ var PageTurner = (function($, window, document) {
 
   function search() {
 
-    var query = input.val().toLowerCase().trim(); // Get search value
+    var query = host.input.val().toLowerCase().trim(); // Get search value
 
-    var matches = students.filter(function(index) { // Go through all the students
+    var matches = host.students.filter(function(index) { // Go through all the students
       var studentItem = this; // Store the student item element
 
       // go through the list of elements in the student item we want to search
-      var results = elementsToQuery.map(function(element) {
+      var results = host.elementsToQuery.map(function(element) {
         // get the text of the element
         var elementText = $(studentItem).find(element).text().toLowerCase().trim();
         // If the query matches the element text
@@ -108,14 +89,14 @@ var PageTurner = (function($, window, document) {
       return results.indexOf(true) !== -1;
     });
 
-    var pagination = createPage(0, students, matches); // display page and create menu
-    $('.' + paginationClass).remove(); // Remove the current menu
+    var pagination = createPage(0, host.students, matches); // display page and create menu
+    $('.' + host.paginationClass).remove(); // Remove the current menu
 
     if(matches.length !== 0) {
-      if(empty) {empty.remove();} // remove empty message if it's there
-      currentPage.append(pagination); // attach menu
+      if(host.empty) {host.empty.remove();} // remove empty message if it's there
+      host.currentPage.append(pagination); // attach menu
     }
-  };
+  }
 
 
   /*
@@ -133,19 +114,19 @@ var PageTurner = (function($, window, document) {
    */
   var displayPage = function(pageIndex, entries, matches) {
 
-    var itemsOnPage = 10; // number of items to display on a page
-    var bottom = pageIndex * itemsOnPage; // Bottom of list to display
-    var top = pageIndex * itemsOnPage + (itemsOnPage - 1); // Top of list to display
+    //var itemsOnPage = 10; // number of items to display on a page
+    var bottom = pageIndex * host.itemsOnPage; // Bottom of list to display
+    var top = pageIndex * host.itemsOnPage + (host.itemsOnPage - 1); // Top of list to display
 
     entries.each(function() {
       $(this).hide();
     });
 
     if(matches.length === 0) {
-      studentList.hide();
-      currentPage.append(empty); // display empty message
+      host.studentList.hide();
+      host.currentPage.append(host.empty); // display empty message
     } else {
-      studentList.show();
+      host.studentList.show();
       matches.each(function(index){
         // if the entry is in the matches and on this page
         if (index >= bottom && index <= top && matches.index(this) !== -1) {
@@ -171,11 +152,10 @@ var PageTurner = (function($, window, document) {
    *
    */
   var createPageLink = function(pageIndex, navObj) {
-    var that = this;
     var pageNumberText = pageIndex + 1;
     var pageLink = $('<li><a href="#"></a></li>'); // create a link...
     // If this page is the current page, mark the link as active
-    navObj.page === index ? pageLink.children().addClass('active') : null;
+    if (navObj.page == pageIndex) { pageLink.children().addClass('active'); }
     pageLink.children().text(pageNumberText).click(function(e) { // Add the link text and on click handler
       // This is what happens when the link is clicked
       e.preventDefault(); // Prevent the link from leaving the page
@@ -184,7 +164,7 @@ var PageTurner = (function($, window, document) {
       createPage(pageIndex, navObj.entries, navObj.matches); // Change the page
     });
     return pageLink;
-  }
+  };
 
 
  /*
@@ -206,7 +186,7 @@ var PageTurner = (function($, window, document) {
       navList.append(pageLink); // and attach it to nav list.
     }
     return navList;
-  }
+  };
 
 
   /*
@@ -223,12 +203,14 @@ var PageTurner = (function($, window, document) {
   var createPage = function(pageIndex, entries, matches) {
     var navObj = displayPage(pageIndex, entries, matches);
     var navList = createPageNavList(navObj);
-    var pagination = $(paginationString);
+    var pagination = $('<' + host.paginationElement +
+                       ' class="' + host.paginationClass + '"></' +
+                       host.paginationElement + '>');
     pagination.append(navList);
     return pagination;
-  }
+  };
 
 
-  return pageTurner;
+  return PageTurner;
 
 })($, window, document);
