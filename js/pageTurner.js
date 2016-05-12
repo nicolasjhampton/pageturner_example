@@ -78,11 +78,7 @@ var PageTurner = (function($, window, document) {
         // get the text of the element
         var elementText = $(studentItem).find(element).text().toLowerCase().trim();
         // If the query matches the element text
-        if (elementText.search(query) !== -1) {
-          return true; // return a 'matched' result
-        } else {
-          return false; // return a 'no match' result
-        }
+        return RegExp(query).test(elementText);
       });
 
       // if any results matched, add the element to the matches array
