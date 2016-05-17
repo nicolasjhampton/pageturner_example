@@ -176,7 +176,7 @@ var PageTurner = (function($, window, document) {
   */
   var createPageNavList = function(navObj) {
     var navList = $('<ul></ul>'); // Create nav list.
-    var navIndex = Math.ceil(navObj.matches.length / 10); // Get the number of pages needed.
+    var navIndex = Math.ceil(navObj.matches.length / host.itemsOnPage); // Get the number of pages needed.
     for(var i = 0; i < navIndex; i++) { // for each page...
       var pageLink = createPageLink(i, navObj); // create a link...
       navList.append(pageLink); // and attach it to nav list.
