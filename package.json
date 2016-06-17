@@ -1,0 +1,37 @@
+{
+  "name": "pageturner_example",
+  "version": "1.0.0",
+  "description": "Creates pages out of identical html items with built in search",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack --config webpack.config.js; open http://localhost:4000/index.html && http-server ./build -p 4000",
+    "devtest": "webpack-dev-server --config webpack.tests.config.js",
+    "open_server": "open http://localhost:3000/test/test.html",
+    "test": "npm run open_server && npm run devtest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nicolasjhampton/pageturner_example.git"
+  },
+  "author": "Nicolas Hampton",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nicolasjhampton/pageturner_example/issues"
+  },
+  "homepage": "https://github.com/nicolasjhampton/pageturner_example#readme",
+  "devDependencies": {
+    "babel-core": "^6.9.1",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.9.0",
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3",
+    "mocha-loader": "^0.7.1",
+    "webpack": "^1.13.1",
+    "webpack-dev-server": "^1.14.1"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.9.1",
+    "jquery": "^2.2.4",
+    "underscore": "^1.8.3"
+  }
+}
