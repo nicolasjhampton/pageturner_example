@@ -39,8 +39,7 @@ webpackJsonp([0],[
 	  "currentPage": '.page',
 	  "itemsClass": ".student-item",
 	  "list": '.student-list',
-	  "searchElement": "input",
-	  "searchID": "search",
+	  "search": { "placeholder": "Search for students...", "id": "search" },
 	  "empty": { 'className': 'empty', 'textContent': 'No Results Found' },
 	  "elementsToQuery": ['h3', 'span.email'],
 	  "itemsOnPage": 10,
@@ -71,12 +70,12 @@ webpackJsonp([0],[
 	 */
 	PageTurner.prototype.run = function () {
 	  var that = this;
-	  this.searchEl = makeElement('input')({ "placeholder": "Search for students...", "id": host.searchID });
+	  this.searchEl = makeElement('input')(host.search);
 	  this.searchEl.addEventListener('keyup', search.bind(that));
 	  this.pageHeader = document.getElementsByClassName(host.pageHeader)[0];
 	  this.currentPage = document.querySelector(host.currentPage);
 	
-	  this.empty = makeElement('h1')({ "className": "empty", "innerHTML": "No Results Found" });
+	  this.empty = makeElement('h1')(host.empty);
 	  this.searchContainer = makeElement('div')({});
 	  this.items = getElements(host.itemsClass)({});
 	  this.searchContainer.appendChild(that.searchEl);
@@ -130,20 +129,19 @@ webpackJsonp([0],[
 	  if (matches.length === 0) {
 	    if (!document.querySelector('.empty')) {
 	      util.hide(document.querySelector(host.list));
-	      //var empty = makeElement('h1')(host.empty);
 	      document.querySelector(host.currentPage).appendChild(this.empty);
-	    } // display empty message
-	  } else {
-	      if (document.querySelector('.empty')) {
-	        /*document.querySelector('.empty')*/this.empty.remove();
-	      }
-	      util.show(document.querySelector(host.list));
-	      matches.map(function (item, index) {
-	        if (index >= bottom && index <= top && matches.includes(item)) {
-	          util.show(item);
-	        }
-	      });
 	    }
+	  } else {
+	    if (document.querySelector('.empty')) {
+	      this.empty.remove();
+	    }
+	    util.show(document.querySelector(host.list));
+	    matches.map(function (item, index) {
+	      if (index >= bottom && index <= top && matches.includes(item)) {
+	        util.show(item);
+	      }
+	    });
+	  }
 	
 	  return { "page": pageIndex, "matches": matches }; // This is the navObj
 	};
@@ -373,18 +371,6 @@ webpackJsonp([0],[
 	
 	var style = selector('style', isStyle, 'grab'); // these selector functions can eat themselves
 	
-	// Element.prototype.grab = grab;
-	// Element.prototype.getStyle = style;
-	
-	// var searchEl1 = makeElement('input')({"placeholder": "Search for students...", "id": "search1"});
-	// var searchEl2 = makeElement('input')({"placeholder": "Search for students...", "id": "search2"});
-	// var searchEl3 = makeElement('input')({"placeholder": "Search for students...", "id": "search3"});
-	// var body = document.getElementsByTagName('body')[0];
-	// body.appendChild(searchEl1);
-	// body.appendChild(searchEl2);
-	// body.appendChild(searchEl3);
-	// var newColorValue = searchEl.grab('style.color')(value('set', 'blue'));
-	
 	var extend = function extend() /* arguments */{
 	  var argsIn = [].concat(Array.prototype.slice.call(arguments));
 	  var out = argsIn.reduce(function (obj1, obj2) {
@@ -407,7 +393,6 @@ webpackJsonp([0],[
 	module.exports.isStyle = isStyle;
 	module.exports.selector = selector;
 	module.exports.style = style;
-	
 	module.exports.random = random;
 	module.exports.getRandomColor = getRandomColor;
 	module.exports.hide = hide;
@@ -417,7 +402,6 @@ webpackJsonp([0],[
 	module.exports.truthy = truthy;
 	module.exports.doWhen = doWhen;
 	module.exports.K = K;
-	
 	module.exports.extend = extend;
 
 /***/ }

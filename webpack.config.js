@@ -3,7 +3,7 @@ var webpack = require('webpack');
 module.exports = {
      entry: {
        "app": "./src/js/pageturner.js",
-       "vendor": ["babel-polyfill", "jquery"]
+       "vendor": ["babel-polyfill"]
      },
      devtool: 'source-map',
      output: {
